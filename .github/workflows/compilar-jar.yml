@@ -4,6 +4,9 @@ on:
   push:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -39,3 +42,11 @@ jobs:
         with:
           name: wandryhp-jar
           path: ${{ env.PROJ_DIR }}/build/libs/*.jar
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          JAR=$(ls "$PROJ_DIR"/build/libs/*.jar | grep -v -- '-sources' | head -n 1)
+          gh release create "build-${{ github.run_number }}" "$JAR" \
+            --title "WandryHP build ${{ github.run_number }}" \
+            --notes "Mod compilado automaticamente."
