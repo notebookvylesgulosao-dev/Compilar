@@ -1,10 +1,8 @@
-name: Compilar WandryHP
+name: Build from zip
 
 on:
-  workflow_dispatch:
   push:
-    paths:
-      - 'WandryHP-projeto-corrigido.zip'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -15,15 +13,19 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      - name: Extrair projeto
-        run: unzip -q WandryHP-projeto-corrigido.zip
-      - name: Compilar
-        working-directory: WandryHP
+      - name: Extract project zip
+        run: |
+          ZIP=$(ls *.zip | head -n 1)
+          echo "Using $ZIP"
+          mkdir proj && unzip -q "$ZIP" -d proj
+          GRADLEW=$(find proj -name gradlew -not -path '*/node_modules/*' | head -n 1)
+          echo "PROJ_DIR=$(dirname "$GRADLEW")" >> "$GITHUB_ENV"
+      - name: Build
+        working-directory: ${{ env.PROJ_DIR }}
         run: |
           chmod +x gradlew
           ./gradlew build --stacktrace
-      - name: Enviar JAR
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: wandryhp-jar
-          path: WandryHP/build/libs/*.jar
+          path: ${{ env.PROJ_DIR }}/build/libs/*.jar
