@@ -10,11 +10,13 @@ import dev.questbook.data.*;
 import net.minecraft.client.gui.DrawContext;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /** Editor completo de uma missão (somente administradores). */
 public class EditQuestModal extends Modal {
 	private final String chapterId;
+	private String targetChapter;
 	private final Quest work;
 	private final boolean isNew;
 	private final TextField title = new TextField("", 80);
@@ -27,6 +29,7 @@ public class EditQuestModal extends Modal {
 	public EditQuestModal(QuestBookScreen s, String chapterId, Quest q, boolean isNew) {
 		super(s);
 		this.chapterId = chapterId;
+		this.targetChapter = chapterId;
 		this.work = Json.copy(q, Quest.class);
 		this.isNew = isNew;
 		title.setText(work.title);
@@ -79,6 +82,19 @@ public class EditQuestModal extends Modal {
 		fieldV(c, xf, x + 24, cy, 70, 16);
 		Ui.text(c, "Y", x + 108, cy + 4, Ui.MUTED);
 		fieldV(c, yf, x + 120, cy, 70, 16);
+		cy += 26;
+
+		// capítulo (clique para alternar; mover a missão entre capítulos)
+		Chapter tc = ClientData.book.chapter(targetChapter);
+		String tcName = tc == null ? targetChapter : tc.title;
+		Ui.text(c, Lang.t("Capítulo", "Chapter"), x + 12, cy + 4, Ui.MUTED);
+		button(c, x + 64, cy, fw - 52, 16, Ui.clip(tcName, fw - 80) + "  >", 0, vis(cy, 16), () -> {
+			List<Chapter> cs = ClientData.chapters();
+			if (cs.size() < 2) return;
+			int cur = 0;
+			for (int k = 0; k < cs.size(); k++) if (cs.get(k).id.equals(targetChapter)) cur = k;
+			targetChapter = cs.get((cur + 1) % cs.size()).id;
+		});
 		cy += 26;
 
 		// dependências
@@ -180,7 +196,7 @@ public class EditQuestModal extends Modal {
 		work.description = desc.text.trim();
 		work.x = xf.asDouble(work.x);
 		work.y = yf.asDouble(work.y);
-		ClientData.saveQuest(chapterId, work);
+		ClientData.saveQuest(targetChapter, work);
 		close();
 	}
 

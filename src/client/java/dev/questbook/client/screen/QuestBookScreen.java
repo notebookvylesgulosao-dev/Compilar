@@ -322,8 +322,8 @@ public class QuestBookScreen extends Screen {
 		c.disableScissor();
 
 		if (editing) {
-			String hint = Lang.t("Arraste: mover  |  Botão direito: nova/editar  |  Shift+clique A depois B: ligar",
-				"Drag: move  |  Right-click: new/edit  |  Shift+click A then B: link");
+			String hint = Lang.t("Arraste: mover  |  Botão direito: nova/editar  |  Shift+clique A depois B: ligar  |  Del: excluir",
+				"Drag: move  |  Right-click: new/edit  |  Shift+click A then B: link  |  Del: delete");
 			Ui.rect(c, canX, canY + canH - 14, canW, 14, 0xCC0D0E12);
 			Ui.text(c, Ui.clip(hint, canW - 12), canX + 6, canY + canH - 11, Ui.GOLD);
 		}
@@ -607,6 +607,13 @@ public class QuestBookScreen extends Screen {
 	public boolean keyPressed(int key, int scan, int mods) {
 		if (!modals.isEmpty()) return modals.get(modals.size() - 1).keyPressed(key, scan, mods);
 		if (search.focused && search.key(key, scan, mods)) return true;
+		if (editing && !search.focused && key == GLFW.GLFW_KEY_DELETE && hoverQuest != null) {
+			final Quest target = hoverQuest;
+			openModal(new ConfirmModal(this,
+				Lang.t("Excluir a missão \"" + target.title + "\"?", "Delete quest \"" + target.title + "\"?"),
+				() -> ClientData.deleteQuest(target)));
+			return true;
+		}
 		if (key == GLFW.GLFW_KEY_ESCAPE) { close(); return true; }
 		if (!search.focused && QuestBookClient.openKey != null && QuestBookClient.openKey.matchesKey(key, scan)) {
 			close();

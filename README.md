@@ -27,6 +27,7 @@ Item, pontos de XP, níveis de XP e comando (`%player%`; executado com permissã
 ## Editor (administradores)
 Quem tem permissão ≥ 2 (ou é o dono em mundo single-player) vê o botão **Editor**:
 - Arraste missões para mover (grade de 0,5). Botão direito no vazio: nova missão; botão direito numa missão: editar.
+- **Del** sobre uma missão (modo Editor) pede confirmação e exclui. No editor da missão, o botão *Capítulo* move a missão para outro capítulo.
 - Shift+clique em A e depois em B: B passa a depender de A (repetir remove a ligação). Ciclos são recusados.
 - Capítulos: `+ Capítulo` e `...` ao lado de cada capítulo (editar, subir, descer, excluir).
 - Seletor de itens/blocos/entidades/biomas/estruturas/dimensões com busca (`@mod` filtra por mod), categorias e tags.
