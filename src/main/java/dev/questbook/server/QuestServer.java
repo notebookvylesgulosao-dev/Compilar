@@ -294,7 +294,7 @@ public final class QuestServer {
 				start = sa.getStructureContaining(pos, TagKey.of(RegistryKeys.STRUCTURE, id));
 			} else {
 				Identifier id = Identifier.tryParse(t);
-				Structure st = id == null ? null : w.getRegistryManager().get(RegistryKeys.STRUCTURE).get(id);
+				Structure st = id == null ? null : w.getRegistryManager().getOrThrow(RegistryKeys.STRUCTURE).get(id);
 				if (st == null) return false;
 				start = sa.getStructureContaining(pos, st);
 			}

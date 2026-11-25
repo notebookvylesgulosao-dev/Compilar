@@ -132,7 +132,7 @@ public class PickerModal extends Modal {
 									boolean tags, boolean biome, Consumer<String> onPick) {
 		var world = MinecraftClient.getInstance().world;
 		if (world == null) return;
-		Registry<T> reg = world.getRegistryManager().get(key);
+		Registry<T> reg = world.getRegistryManager().getOrThrow(key);
 		List<Entry> l = new ArrayList<>();
 		for (Identifier id : new TreeSet<>(reg.getIds())) {
 			l.add(new Entry(id.toString(), Describe.target(biome ? dev.questbook.data.ObjectiveType.Kind.BIOME : dev.questbook.data.ObjectiveType.Kind.STRUCTURE, id.toString()), null, "other"));
