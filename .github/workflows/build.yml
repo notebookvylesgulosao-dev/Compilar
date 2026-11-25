@@ -1,0 +1,36 @@
+name: Build QuestBook
+on:
+  workflow_dispatch:
+  push:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Compilar
+        run: |
+          set -o pipefail
+          chmod +x gradlew
+          ./gradlew build --no-daemon --console=plain 2>&1 | tee /tmp/build.log
+      - name: Erros detalhados
+        if: failure()
+        run: |
+          python3 - <<'PY'
+          import re
+          t=open('/tmp/build.log').read().splitlines()
+          out=[]
+          for i,l in enumerate(t):
+              if re.search(r'error:|FAILED|What went wrong', l):
+                  out.append(' | '.join(x.strip() for x in t[i:i+4]))
+          print('::error title=ERROS::'+'%0A'.join(out[:60]))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: questbook-jar
+          path: |
+            build/libs/questbook-*.jar
+            !build/libs/*-sources.jar

@@ -1,0 +1,21 @@
+{
+	"schemaVersion": 1,
+	"id": "questbook",
+	"version": "${version}",
+	"name": "Quest Book",
+	"description": "Sistema de missões com capítulos, árvores de missões, editor visual e progresso individual.",
+	"authors": ["Quest Book"],
+	"license": "MIT",
+	"environment": "*",
+	"entrypoints": {
+		"main": ["dev.questbook.QuestBookMod"],
+		"client": ["dev.questbook.client.QuestBookClient"]
+	},
+	"mixins": ["questbook.mixins.json"],
+	"depends": {
+		"fabricloader": ">=0.16.10",
+		"minecraft": "~1.21.4",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
